@@ -2,36 +2,112 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "TS: Current File (ts-node)",
+      "name": "TS: everything",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "runtimeArgs": ["-r", "ts-node/register"],
-      "args": ["${file}"],
-      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
-      "resolveSourceMapLocations": ["**", "!**/node_modules/**"]
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "program": "${workspaceFolder}/everything.ts",
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**"
+      ],
+      "resolveSourceMapLocations": [
+        "**",
+        "!**/node_modules/**"
+      ]
     },
     {
       "name": "TS: list-by-project (pick export file)",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "runtimeArgs": ["-r", "ts-node/register"],
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
       "program": "${workspaceFolder}/list-by-project.ts",
-      "args": ["${input:exportFile}"],
-      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
-      "resolveSourceMapLocations": ["**", "!**/node_modules/**"]
+      "args": [
+        "${input:exportFile}"
+      ],
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**"
+      ],
+      "resolveSourceMapLocations": [
+        "**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "name": "TS: find-by-url-id",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "program": "${workspaceFolder}/find-by-url-id.ts",
+      "args": [
+        "https://chatgpt.com/c/68a4b9e6-cd54-8328-8ea8-e119cd17bfab"
+      ],
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**"
+      ],
+      "resolveSourceMapLocations": [
+        "**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "name": "TS: dump-messages",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "program": "${workspaceFolder}/dump-messages.ts",
+      "args": [
+        "6833ba60-48d0-800b-b806-7d8acfbf2181"
+      ],
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**"
+      ],
+      "resolveSourceMapLocations": [
+        "**",
+        "!**/node_modules/**"
+      ]
     },
     {
       "name": "TS: parse-chatgpt-export (exportDir + out)",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "runtimeArgs": ["-r", "ts-node/register"],
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
       "program": "${workspaceFolder}/parse-chatgpt-export.ts",
-      "args": ["${input:exportDir}", "${input:outFile}"],
-      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
-      "resolveSourceMapLocations": ["**", "!**/node_modules/**"]
+      "args": [
+        "${input:exportDir}",
+        "${input:outFile}"
+      ],
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**"
+      ],
+      "resolveSourceMapLocations": [
+        "**",
+        "!**/node_modules/**"
+      ]
     }
   ],
   "inputs": [
