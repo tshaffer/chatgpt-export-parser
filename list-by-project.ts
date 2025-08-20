@@ -7,7 +7,8 @@ import fs from "fs/promises";
 const dataDir = '/Users/tedshaffer/Documents/Projects/chatgpt-export-parser/data/chatGPTExport-08-19-25-0';
 
 (async () => {
-  const convs = JSON.parse(await fs.readFile(`${dataDir}/conversations.json`, "utf8"));
+  // const convs = JSON.parse(await fs.readFile(`${dataDir}/conversations.json`, "utf8"));
+  const convs = JSON.parse(await fs.readFile(`${dataDir}/conversations-with-projects.json`, "utf8"));
   const projects = new Map<string, { name: string; convs: any[] }>();
 
   for (const c of convs) {
