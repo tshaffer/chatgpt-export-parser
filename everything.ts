@@ -5,11 +5,19 @@ npx ts-node everything.ts
 import fs from "fs/promises";
 import path from "path";
 
+// conversation
 interface Chat {
   id: string;
   title: string;
   createTime: string;
   updateTime: string;
+}
+
+interface ChatEntry {
+  id: string;
+  chatId: string;
+  prompt: string;
+  response: string;
 }
 
 const dataDir = '/Users/tedshaffer/Documents/Projects/chatgpt-export-parser/data/';

@@ -18,11 +18,13 @@ function extractText(content: any): string {
   try { return JSON.stringify(content); } catch { return String(content); }
 }
 
+const dataDir = '/Users/tedshaffer/Documents/Projects/chatgpt-export-parser/data/chatGPTExport-08-19-25-0';
+
 (async () => {
   const [convId] = process.argv.slice(2);
   if (!convId) throw new Error("Usage: ts-node dump-messages.ts <conversation_id>");
 
-  const convs = JSON.parse(await fs.readFile("/Users/tedshaffer/Downloads/4dc0ec0b960f5ff39a1aa66f9e9fec586aa01c34c4e848209f98a35283ff296a-2025-08-19-18-06-12-e01b95e4bb804d9e9b323118b06d8fae/conversations.json", "utf8"));
+  const convs = JSON.parse(await fs.readFile(`${dataDir}/conversations.json`, "utf8"));
   const c = convs.find((x: any) => x.id === convId);
   if (!c) throw new Error("Conversation not found");
 
