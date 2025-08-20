@@ -82,20 +82,17 @@ function normalizeMessages(conv: any): { id?: string; role: string; text: string
 }
 
 
-const devNewCode = (conv: any) => {
-  const msgs = normalizeMessages(conv)
+const getChatEntries = (rawChat: any) => {
+
+  const msgs = normalizeMessages(rawChat)
     .map(m => ({ ...m, text: (m.text || "").trim() }))
-    // Keep only roles we care about for pairing; you can widen this if needed
     .filter(m => ["user", "assistant"].includes(m.role) && m.text.length > 0);
 
 
-  // const messages = normalizeMessages(conv);
-  console.log(msgs);
-
   const entries: ChatEntry[] = [];
-  const chatId = conv.id;
+  const chatId = rawChat.id;
 
-    for (let i = 0; i < msgs.length; i++) {
+  for (let i = 0; i < msgs.length; i++) {
     const m = msgs[i];
 
     // Start a new entry when we encounter a user message
@@ -135,35 +132,10 @@ const devNewCode = (conv: any) => {
     }
     // If an assistant message comes before any user message (edge case), skip it.
   }
+  
+  console.log(rawChat);
+  console.log(entries);
 
-}
-
-const getChatEntry = (rawChat: any) => {
-
-  let msgs: any[] = [];
-  if (Array.isArray(rawChat.messages)) {
-    msgs = rawChat.messages.map((m: any) => ({
-      role: m?.author?.role ?? "assistant",
-      text: extractText(m?.content),
-      t: m?.create_time
-    }));
-  } else if (rawChat.mapping) {
-    msgs = Object.values(rawChat.mapping)
-      .map((n: any) => n?.message)
-      .filter(Boolean)
-      .map((m: any) => ({
-        role: m?.author?.role ?? "assistant",
-        text: extractText(m?.content),
-        t: m?.create_time
-      }))
-      .sort((a, b) => (a.t ?? 0) - (b.t ?? 0));
-  }
-
-  for (const m of msgs) {
-    console.log(`\n[${m.role}] ${m.text.slice(0, 200)}${m.text.length > 200 ? "…" : ""}`);
-  }
-
-  console.log('done');
 }
 
 (async () => {
@@ -175,8 +147,7 @@ const getChatEntry = (rawChat: any) => {
     const chat = getChatMetadata(rawChat);
     chats.push(chat);
 
-    // getChatEntry(rawChat);
-    devNewCode(rawChat);
+    getChatEntries(rawChat);
   }
 
   console.log(chats);
