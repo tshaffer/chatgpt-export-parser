@@ -91,6 +91,51 @@ const devNewCode = (conv: any) => {
 
   // const messages = normalizeMessages(conv);
   console.log(msgs);
+
+  const entries: ChatEntry[] = [];
+  const chatId = conv.id;
+
+    for (let i = 0; i < msgs.length; i++) {
+    const m = msgs[i];
+
+    // Start a new entry when we encounter a user message
+    if (m.role === "user") {
+      // Merge consecutive user messages (rare, but can happen)
+      let prompt = m.text;
+      let firstUserId = m.id;
+      let j = i + 1;
+      while (j < msgs.length && msgs[j].role === "user") {
+        prompt += "\n" + msgs[j].text;
+        if (!firstUserId) firstUserId = msgs[j].id;
+        j++;
+      }
+
+      // Collect assistant replies until next user (concatenate if multiple assistant chunks)
+      let response = "";
+      let firstAssistantId: string | undefined;
+      while (j < msgs.length && msgs[j].role === "assistant") {
+        if (!firstAssistantId) firstAssistantId = msgs[j].id;
+        response += (response ? "\n" : "") + msgs[j].text;
+        j++;
+      }
+
+      // Create an entry even if response is empty (e.g., truncated chats)
+      const entryId =
+        firstAssistantId || firstUserId || `${chatId}:${entries.length}`;
+
+      entries.push({
+        id: String(entryId),
+        chatId,
+        prompt: prompt.trim(),
+        response: response.trim(),
+      });
+
+      // advance i to the last chunk we consumed
+      i = j - 1;
+    }
+    // If an assistant message comes before any user message (edge case), skip it.
+  }
+
 }
 
 const getChatEntry = (rawChat: any) => {
