@@ -43,6 +43,55 @@ function extractText(content: any): string {
   try { return JSON.stringify(content); } catch { return String(content); }
 }
 
+type ExportMessage = {
+  id?: string;
+  author?: { role?: string };
+  content?: any;
+  create_time?: number;
+} | undefined;
+
+
+function normalizeMessages(conv: any): { id?: string; role: string; text: string; t?: number }[] {
+  // Prefer newer flat messages[]
+  if (Array.isArray(conv?.messages)) {
+    return conv.messages.map((m: ExportMessage) => ({
+      id: m?.id,
+      role: m?.author?.role ?? "assistant",
+      text: extractText(m?.content),
+      t: m?.create_time,
+    }));
+  }
+
+  // Older mapping{} graph
+  if (conv?.mapping && typeof conv.mapping === "object") {
+    const msgs = Object.values(conv.mapping)
+      .map((n: any) => n?.message)
+      .filter(Boolean)
+      .map((m: any) => ({
+        id: m?.id,
+        role: m?.author?.role ?? "assistant",
+        text: extractText(m?.content),
+        t: m?.create_time,
+      }));
+    // Sort by time; fall back to stable order if times missing
+    msgs.sort((a, b) => (a.t ?? 0) - (b.t ?? 0));
+    return msgs;
+  }
+
+  return [];
+}
+
+
+const devNewCode = (conv: any) => {
+  const msgs = normalizeMessages(conv)
+    .map(m => ({ ...m, text: (m.text || "").trim() }))
+    // Keep only roles we care about for pairing; you can widen this if needed
+    .filter(m => ["user", "assistant"].includes(m.role) && m.text.length > 0);
+
+
+  // const messages = normalizeMessages(conv);
+  console.log(msgs);
+}
 
 const getChatEntry = (rawChat: any) => {
 
@@ -81,7 +130,8 @@ const getChatEntry = (rawChat: any) => {
     const chat = getChatMetadata(rawChat);
     chats.push(chat);
 
-    getChatEntry(rawChat);
+    // getChatEntry(rawChat);
+    devNewCode(rawChat);
   }
 
   console.log(chats);
