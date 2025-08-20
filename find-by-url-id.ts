@@ -1,5 +1,7 @@
-// npx ts-node find-by-url-id.ts "https://chatgpt.com/c/68a4b9e6-cd54-8328-8ea8-e119cd17bfab"
-// npx ts-node find-by-url-id.ts "https://chatgpt.com/c/68a0fcd6-6128-8327-bb8b-358a849ddc70"
+/*
+npx ts-node find-by-url-id.ts "https://chatgpt.com/c/68a4b9e6-cd54-8328-8ea8-e119cd17bfab"
+npx ts-node find-by-url-id.ts "https://chatgpt.com/c/68a0fcd6-6128-8327-bb8b-358a849ddc70"
+*/
 // find-by-url-id.ts
 import fs from "fs/promises";
 

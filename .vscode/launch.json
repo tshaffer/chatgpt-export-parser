@@ -1,0 +1,57 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "TS: Current File (ts-node)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "args": ["${file}"],
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "resolveSourceMapLocations": ["**", "!**/node_modules/**"]
+    },
+    {
+      "name": "TS: list-by-project (pick export file)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "program": "${workspaceFolder}/list-by-project.ts",
+      "args": ["${input:exportFile}"],
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "resolveSourceMapLocations": ["**", "!**/node_modules/**"]
+    },
+    {
+      "name": "TS: parse-chatgpt-export (exportDir + out)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "program": "${workspaceFolder}/parse-chatgpt-export.ts",
+      "args": ["${input:exportDir}", "${input:outFile}"],
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "resolveSourceMapLocations": ["**", "!**/node_modules/**"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "exportFile",
+      "type": "promptString",
+      "description": "Path to conversations.json",
+      "default": "${workspaceFolder}/conversations.json"
+    },
+    {
+      "id": "exportDir",
+      "type": "promptString",
+      "description": "Path to UNZIPPED export directory (contains conversations.json)",
+      "default": "${workspaceFolder}"
+    },
+    {
+      "id": "outFile",
+      "type": "promptString",
+      "description": "Output structured JSON filename",
+      "default": "${workspaceFolder}/structured-chatgpt.json"
+    }
+  ]
+}

@@ -1,4 +1,6 @@
-// npx ts-node ./list-by-project.ts
+/*
+npx ts-node ./list-by-project.ts
+*/
 // // list-by-project.ts
 import fs from "fs/promises";
 
