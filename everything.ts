@@ -33,6 +33,7 @@ const outputDir = path.join(dataDir, 'output');
 
 let conversations: any;
 const projects = new Map<string, Project>();
+const chatEntries: ChatEntry[] = [];
 
 const getChatMetadata = (rawChat: any): Chat => {
   const id = rawChat.id;
@@ -93,13 +94,12 @@ function normalizeMessages(conv: any): { id?: string; role: string; text: string
 }
 
 
-const getChatEntries = (rawChat: any) => {
+const addChatEntriesFromConversation = (rawChat: any) => {
 
   const msgs = normalizeMessages(rawChat)
     .map(m => ({ ...m, text: (m.text || "").trim() }))
     .filter(m => ["user", "assistant"].includes(m.role) && m.text.length > 0);
 
-  const entries: ChatEntry[] = [];
   const chatId = rawChat.id;
 
   for (let i = 0; i < msgs.length; i++) {
@@ -128,9 +128,9 @@ const getChatEntries = (rawChat: any) => {
 
       // Create an entry even if response is empty (e.g., truncated chats)
       const entryId =
-        firstAssistantId || firstUserId || `${chatId}:${entries.length}`;
+        firstAssistantId || firstUserId || `${chatId}:${chatEntries.length}`;
 
-      entries.push({
+      chatEntries.push({
         id: String(entryId),
         chatId,
         prompt: prompt.trim(),
@@ -168,12 +168,9 @@ const getProjectFromConversation = (rawChat: any): Project => {
 
   for (const conversation of conversations) {
     const project = getProjectFromConversation(conversation);
-    
     addConversationToProject(project, conversation);
-
-    getChatEntries(conversation);
+    addChatEntriesFromConversation(conversation);
   }
 
-  console.log(projects.size, "projects found");
-  console.log(projects);
+  console.log('Complete');
 })();
