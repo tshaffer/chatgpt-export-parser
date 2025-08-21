@@ -1,5 +1,5 @@
 /*
-npx ts-node everything.ts
+  npx ts-node everything.ts
 */
 // everything.ts
 import fs from "fs/promises";
@@ -31,7 +31,7 @@ const dataDir = '/Users/tedshaffer/Documents/Projects/chatgpt-export-parser/data
 const inputDir = path.join(dataDir, 'chatGPTExport-08-19-25-0');
 const outputDir = path.join(dataDir, 'output');
 
-let rawChats: any;
+let conversations: any;
 const projects = new Map<string, Project>();
 
 const getChatMetadata = (rawChat: any): Chat => {
@@ -56,7 +56,6 @@ type ExportMessage = {
   content?: any;
   create_time?: number;
 } | undefined;
-
 
 function normalizeMessages(conv: any): { id?: string; role: string; text: string; t?: number }[] {
   // Prefer newer flat messages[]
@@ -94,7 +93,6 @@ const getChatEntries = (rawChat: any) => {
   const msgs = normalizeMessages(rawChat)
     .map(m => ({ ...m, text: (m.text || "").trim() }))
     .filter(m => ["user", "assistant"].includes(m.role) && m.text.length > 0);
-
 
   const entries: ChatEntry[] = [];
   const chatId = rawChat.id;
@@ -139,24 +137,18 @@ const getChatEntries = (rawChat: any) => {
     }
     // If an assistant message comes before any user message (edge case), skip it.
   }
-
-  // console.log(rawChat);
-  // console.log(entries);
-
 }
 
 (async () => {
 
-  rawChats = JSON.parse(await fs.readFile(`${inputDir}/conversations-with-projects.json`, "utf8"));
+  conversations = JSON.parse(await fs.readFile(`${inputDir}/conversations-with-projects.json`, "utf8"));
 
-  // const chats: Chat[] = [];
-
-  for (const rawChat of rawChats) {
+  for (const conversation of conversations) {
 
     let project: Project;
 
-    const projectId = rawChat.project?.id ?? "none";
-    const projectName = rawChat.project?.name ?? "No Project";
+    const projectId = conversation.project?.id ?? "none";
+    const projectName = conversation.project?.name ?? "No Project";
     if (!projects.has(projectId)) {
       project = {
         id: projectId,
@@ -168,14 +160,12 @@ const getChatEntries = (rawChat: any) => {
       project = projects.get(projectId)!;
     }
 
-    const chat = getChatMetadata(rawChat);
+    const chat = getChatMetadata(conversation);
     project.chats.push(chat);
 
-    getChatEntries(rawChat);
+    getChatEntries(conversation);
   }
 
   console.log(projects.size, "projects found");
   console.log(projects);
-  
-  // console.log(chats);
 })();
