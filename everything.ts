@@ -11,7 +11,6 @@ interface Project {
   chats: Chat[];
 }
 
-// conversation
 interface Chat {
   id: string;
   title: string;
@@ -27,9 +26,9 @@ interface ChatEntry {
 }
 
 const dataDir = '/Users/tedshaffer/Documents/Projects/chatgpt-export-parser/data/';
-
 const inputDir = path.join(dataDir, 'chatGPTExport-08-19-25-0');
-const outputDir = path.join(dataDir, 'output');
+const jsonOutputFilePath = path.join(dataDir, "chatgpt-export.json");
+const jsonlOutputFilePath = path.join(dataDir, "chatgpt-export.jsonl");
 
 let conversations: any;
 const projects = new Map<string, Project>();
@@ -161,6 +160,45 @@ const getProjectFromConversation = (rawChat: any): Project => {
   return project;
 };
 
+/*
+  Code to read the input file and parse the JSONL
+
+  const raw = await fs.readFile("chatgpt-export.jsonl", "utf8");
+  const objects = raw
+    .split("\n")
+    .filter(Boolean)
+    .map(line => JSON.parse(line));
+*/
+
+const writeJson = async () => {
+  const combined = {
+    exportedAt: new Date().toISOString(),
+    projects: Array.from(projects.values()),
+    chatEntries,
+  };
+  await fs.writeFile(jsonOutputFilePath, JSON.stringify(combined, null, 2), "utf8");
+  console.log(`Wrote combined JSON → ${jsonOutputFilePath}`);
+}
+
+const writeJsonl = async () => {
+  const lines: string[] = [];
+  for (const p of Array.from(projects.values())) {
+    lines.push(JSON.stringify({ type: "project", data: p }));
+  }
+  for (const e of chatEntries) {
+    lines.push(JSON.stringify({ type: "chatEntry", data: e }));
+  }
+  await fs.writeFile(jsonlOutputFilePath, lines.join("\n"), "utf8");
+  console.log(`Wrote JSONL (${lines.length} records) → ${jsonlOutputFilePath}`);
+}
+
+
+const outputToFile = async () => {
+
+  await writeJson();
+  // await writeJsonl();
+}
+
 // main
 (async () => {
 
@@ -171,6 +209,8 @@ const getProjectFromConversation = (rawChat: any): Project => {
     addConversationToProject(project, conversation);
     addChatEntriesFromConversation(conversation);
   }
+
+  await outputToFile();
 
   console.log('Complete');
 })();
