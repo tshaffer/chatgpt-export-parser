@@ -42,6 +42,11 @@ const getChatMetadata = (rawChat: any): Chat => {
   return { id, title, createTime, updateTime };
 };
 
+const addConversationToProject = (project: Project, conversation: any): void => {
+  const chat = getChatMetadata(conversation);
+  project.chats.push(chat);
+}
+
 function extractText(content: any): string {
   if (!content) return "";
   if (typeof content === "string") return content;
@@ -139,29 +144,32 @@ const getChatEntries = (rawChat: any) => {
   }
 }
 
+const getProjectFromConversation = (rawChat: any): Project => {
+  let project: Project;
+  const projectId = rawChat.project?.id ?? "none";
+  const projectName = rawChat.project?.name ?? "No Project";
+  if (!projects.has(projectId)) {
+    project = {
+      id: projectId,
+      name: projectName,
+      chats: []
+    };
+    projects.set(projectId, project);
+  } else {
+    project = projects.get(projectId)!;
+  }
+  return project;
+};
+
+// main
 (async () => {
 
   conversations = JSON.parse(await fs.readFile(`${inputDir}/conversations-with-projects.json`, "utf8"));
 
   for (const conversation of conversations) {
-
-    let project: Project;
-
-    const projectId = conversation.project?.id ?? "none";
-    const projectName = conversation.project?.name ?? "No Project";
-    if (!projects.has(projectId)) {
-      project = {
-        id: projectId,
-        name: projectName,
-        chats: []
-      };
-      projects.set(projectId, project);
-    } else {
-      project = projects.get(projectId)!;
-    }
-
-    const chat = getChatMetadata(conversation);
-    project.chats.push(chat);
+    const project = getProjectFromConversation(conversation);
+    
+    addConversationToProject(project, conversation);
 
     getChatEntries(conversation);
   }
