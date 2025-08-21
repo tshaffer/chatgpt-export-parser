@@ -5,6 +5,12 @@ npx ts-node everything.ts
 import fs from "fs/promises";
 import path from "path";
 
+interface Project {
+  id: string; // unique identifier
+  name: string;
+  chats: Chat[];
+}
+
 // conversation
 interface Chat {
   id: string;
@@ -26,6 +32,7 @@ const inputDir = path.join(dataDir, 'chatGPTExport-08-19-25-0');
 const outputDir = path.join(dataDir, 'output');
 
 let rawChats: any;
+const projects = new Map<string, Project>();
 
 const getChatMetadata = (rawChat: any): Chat => {
   const id = rawChat.id;
@@ -132,23 +139,43 @@ const getChatEntries = (rawChat: any) => {
     }
     // If an assistant message comes before any user message (edge case), skip it.
   }
-  
-  console.log(rawChat);
-  console.log(entries);
+
+  // console.log(rawChat);
+  // console.log(entries);
 
 }
 
 (async () => {
-  rawChats = JSON.parse(await fs.readFile(`${inputDir}/conversations.json`, "utf8"));
 
-  const chats: Chat[] = [];
+  rawChats = JSON.parse(await fs.readFile(`${inputDir}/conversations-with-projects.json`, "utf8"));
+
+  // const chats: Chat[] = [];
 
   for (const rawChat of rawChats) {
+
+    let project: Project;
+
+    const projectId = rawChat.project?.id ?? "none";
+    const projectName = rawChat.project?.name ?? "No Project";
+    if (!projects.has(projectId)) {
+      project = {
+        id: projectId,
+        name: projectName,
+        chats: []
+      };
+      projects.set(projectId, project);
+    } else {
+      project = projects.get(projectId)!;
+    }
+
     const chat = getChatMetadata(rawChat);
-    chats.push(chat);
+    project.chats.push(chat);
 
     getChatEntries(rawChat);
   }
 
-  console.log(chats);
+  console.log(projects.size, "projects found");
+  console.log(projects);
+  
+  // console.log(chats);
 })();
