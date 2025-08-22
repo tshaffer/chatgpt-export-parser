@@ -1,1 +1,0 @@
-node - e "const c=require('./conversations.json'); console.log(c.filter(x=>x.project && x.project.id).length, 'with project out of', c.length)"
