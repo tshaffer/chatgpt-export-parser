@@ -1,9 +1,14 @@
 /*
+  from
+      /Users/tedshaffer/Documents/Projects/chatgpt-export-parser/scripts
+  run
+      npx ts-node apply-project-map.ts ../data/chatGPTExport-08-21-25-0/conversations.json ../data/chatGPTExport-08-21-25-0/project-map.json ../data/chatGPTExport-08-21-25-0/conversations-with-projects.json
+  
+      npx ts-node apply-project-map.ts /Users/tedshaffer/Documents/Projects/chatgpt-export-parser/data/chatGPTExport-08-19-25-0/conversations.json /Users/tedshaffer/Documents/Projects/chatgpt-export-parser/data/project-map.json
   npx ts-node apply-project-map.ts conversations.json project-map.json
   npx ts-node apply-project-map.ts /Users/tedshaffer/Documents/Projects/chatgpt-export-parser/data/chatGPTExport-08-19-25-0/conversations.json /Users/tedshaffer/Documents/Projects/chatgpt-export-parser/data/project-map.json
 */
 import fs from "fs/promises";
-import path from "path";
 
 (async () => {
   const exportFile = process.argv[2] ?? "conversations.json";
