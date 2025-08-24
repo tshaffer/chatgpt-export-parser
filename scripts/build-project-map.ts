@@ -1,11 +1,15 @@
 /**
  * Usage:
- *   npx ts-node build-project-map.ts "/path/to/chatIdChromeExports"
+ * from
+ *  /Users/tedshaffer/Documents/Projects/chatgpt-export-parser/scripts
+ *      npx ts-node build-project-map.ts "/path/to/chatIdChromeExports"
  *
  
  * Example:
 npx ts-node build-project-map.ts data/chatGPTExport-08-19-25-0/chatIdChromeExports
 npx ts-node build-project-map.ts data/chatGPTExport-08-21-25-0/chatIdChromeExports
+npx ts-node build-project-map.ts ../data/chatGPTExport-08-23-25-0/chatIdChromeExports
+npx ts-node build-project-map.ts ../data/chatGPTExport-08-24-25-0/chatIdChromeExports
  *
  * Output:
  *   Writes project-map.json one directory *above* the input directory.
